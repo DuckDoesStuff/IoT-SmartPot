@@ -1,0 +1,29 @@
+<div>
+    <button onclick="on()">On</button>
+    <button onclick="off()">Off</button>
+   
+</div>
+
+<script>
+        function on() {
+            // Use AJAX to send a request to the server
+            fetch('/buttonClick', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ state: true })
+            })
+        }
+
+        function off() {
+            // Use AJAX to send a request to the server
+            fetch('/buttonClick', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ state: false })
+            });
+        }
+</script>
