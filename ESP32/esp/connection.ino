@@ -1,19 +1,12 @@
 // Initialize WiFi
 bool initWiFi() {
-  if(ssid=="" || ip==""){
+  if(ssid==""){
     Serial.println("Undefined SSID or IP address.");
     return false;
   }
 
   WiFi.mode(WIFI_STA);
-  localIP.fromString(ip.c_str());
-  localGateway.fromString(gateway.c_str());
 
-
-  if (!WiFi.config(localIP, localGateway, subnet)){
-    Serial.println("STA Failed to configure");
-    return false;
-  }
   WiFi.begin(ssid.c_str(), pass.c_str());
   Serial.println("Connecting to WiFi...");
 
@@ -29,5 +22,7 @@ bool initWiFi() {
   }
 
   Serial.println(WiFi.localIP());
+  Serial.println("wifi");
+
   return true;
 }
