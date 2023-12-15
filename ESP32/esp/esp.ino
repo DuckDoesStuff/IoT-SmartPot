@@ -44,9 +44,15 @@ const long interval = 10000;  // interval to wait for Wi-Fi connection (millisec
 
 // Set up pin
 const int ledPin = 2;
-const int waterLevelPin = 35;
-const int soilMoistPin = 34;
+const int waterLevelPin = 34;
+const int soilMoistPin = 35;
 const int pumpPin = 13;
+
+int waterLevel = 0;
+int soilMoist = 0;
+
+int waterLevelLimit = 2;
+int soilMoistLimit = 50;
 
 // Time between each request
 const unsigned long requestTime = 15000;
@@ -137,5 +143,14 @@ void loop() {
     mqttConnect();
   }
   client.loop();
-  sendRequest();
+  // sendRequest();
+
+  waterLevel = readWater();
+  soilMoist = readMoist();
+  Serial.println(waterLevel);
+  Serial.println(soilMoist);
+
+  // pumpWater();
+
+  delay(1000);
 }
