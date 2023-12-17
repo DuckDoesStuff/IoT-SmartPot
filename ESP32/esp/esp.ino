@@ -4,6 +4,7 @@
 #include <PubSubClient.h>
 #include <AsyncTCP.h>
 #include "SPIFFS.h"
+#include <ezButton.h>
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -42,27 +43,30 @@ IPAddress subnet(255, 255, 0, 0);
 unsigned long previousMillis = 0;
 const long interval = 10000;  // interval to wait for Wi-Fi connection (milliseconds)
 
+// Time between each request
+const unsigned long requestTime = 15000;
+unsigned long lastRequestTime = 0;
+
 // Set up pin
 const int ledPin = 2;
 const int waterLevelPin = 34;
 const int soilMoistPin = 35;
 const int pumpPin = 13;
+const int switchPin = 12;
+ezButton toggleSwitch(switchPin);
 
 int waterLevel = 0;
 int soilMoist = 0;
 
 int waterLevelLimit = 2;
-int soilMoistLimit = 50;
-
-// Time between each request
-const unsigned long requestTime = 15000;
-unsigned long lastRequestTime = 0;
+int soilMoistLimit = 20;
 
 void setPin() {
   pinMode(ledPin, OUTPUT);
   pinMode(waterLevelPin, INPUT);
   pinMode(soilMoistPin, INPUT);
   pinMode(pumpPin, OUTPUT);
+  toggleSwitch.setDebounceTime(50);
 }
 
 void setup() {
@@ -145,12 +149,18 @@ void loop() {
   client.loop();
   // sendRequest();
 
-  waterLevel = readWater();
-  soilMoist = readMoist();
-  Serial.println(waterLevel);
-  Serial.println(soilMoist);
+  // waterLevel = readWater();
+  // soilMoist = readMoist();
+  // Serial.println(waterLevel);
+  // Serial.println(soilMoist);
 
-  // pumpWater();
+  //pumpWater();
+  // toggleSwitch.loop(); // MUST call the loop() function first
+  // if(digitalRead(switchPin) == LOW) {
+  //   Serial.println("Switch: OFF");
+  // }else {
+  //   Serial.println("Switch: ON");
+  // }
 
-  delay(1000);
+  delay(100);
 }
