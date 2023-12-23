@@ -1,0 +1,471 @@
+[
+    {
+        "id": "2632fbc39bf76dc1",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fee0a17ef8a75889",
+        "type": "http request",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.thingspeak.com/channels/2382963/feeds.json?api_key=HMVBN27A17SGJ1N5&results=1",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 410,
+        "y": 140,
+        "wires": [
+            [
+                "cb721efad44b35d3",
+                "1b4207ec6795d74f",
+                "7afee0a83eb645ae",
+                "42bda75c35176d18"
+            ]
+        ]
+    },
+    {
+        "id": "80e04023c5c9b520",
+        "type": "inject",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "20",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "fee0a17ef8a75889"
+            ]
+        ]
+    },
+    {
+        "id": "cb721efad44b35d3",
+        "type": "function",
+        "z": "2632fbc39bf76dc1",
+        "name": "function 5",
+        "func": "msg.payload = msg.payload.feeds[0].field1;\n\n// Check if payload is less than 35\nif (msg.payload <35) {\n    // Set the URL for the HTTP request\n    msg.url = \"https://maker.ifttt.com/trigger/notice/json/with/key/bEcjIdlhfq-VdZI_egeHPN\";\n    // Set the HTTP method\n    msg.method = \"POST\";\n}\n\n// Send the message to both the http request node and the ui_chart node\nreturn [msg, msg];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 180,
+        "wires": [
+            [
+                "1c9d24b90297cb12",
+                "e41aa19539a5bf8e"
+            ]
+        ]
+    },
+    {
+        "id": "1c9d24b90297cb12",
+        "type": "ui_chart",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "group": "22c3c897cb35bb15",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "AirHumidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#bfe3fd",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 930,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c72d25d5ebeb4a6d",
+        "type": "ui_chart",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "group": "22c3c897cb35bb15",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "AirTemp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "20",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 920,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5dd0aa430d7802e2",
+        "type": "ui_chart",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "group": "6bf10a3df078c33b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "waterLevel",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "5",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 930,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "35dfb205a3b5c666",
+        "type": "ui_chart",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "group": "6bf10a3df078c33b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "soilMoist",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 920,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1b4207ec6795d74f",
+        "type": "function",
+        "z": "2632fbc39bf76dc1",
+        "name": "function 6",
+        "func": "msg.payload = msg.payload.feeds[0].field2;\n\n// Check if payload is less than 50\nif (msg.payload < 3) {\n    // Set the URL for the HTTP request\n    msg.url = \"https://maker.ifttt.com/trigger/warning/json/with/key/bEcjIdlhfq-VdZI_egeHPN\";\n\n    // Set the HTTP method\n    msg.method = \"POST\";\n}\n\n// Send the message to both the http request node and the ui_chart node\nreturn [msg, msg];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 240,
+        "wires": [
+            [
+                "5dd0aa430d7802e2",
+                "e823a807df84d25c"
+            ]
+        ]
+    },
+    {
+        "id": "7afee0a83eb645ae",
+        "type": "function",
+        "z": "2632fbc39bf76dc1",
+        "name": "function 7",
+        "func": "msg.payload = msg.payload.feeds[0].field3;\n\n// Check if payload is less than 50\nif (msg.payload < global.get(\"moistLimit\") || 20) {\n    // Set the URL for the HTTP request\n    msg.url = \"https://maker.ifttt.com/trigger/notice/json/with/key/bEcjIdlhfq-VdZI_egeHPN\";\n    // Set the HTTP method\n    msg.method = \"POST\";\n}\n\n// Send the message to both the http request node and the ui_chart node\nreturn [msg, msg];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 300,
+        "wires": [
+            [
+                "35dfb205a3b5c666",
+                "e41aa19539a5bf8e"
+            ]
+        ]
+    },
+    {
+        "id": "42bda75c35176d18",
+        "type": "function",
+        "z": "2632fbc39bf76dc1",
+        "name": "function 8",
+        "func": "msg.payload = msg.payload.feeds[0].field4;\n\n// Check if payload is less than 50\nif (msg.payload > 40) {\n    // Set the URL for the HTTP request\n    msg.url = \"https://maker.ifttt.com/trigger/notice/json/with/key/bEcjIdlhfq-VdZI_egeHPN\";\n    // Set the HTTP method\n    msg.method = \"POST\";\n}\n\n// Send the message to both the http request node and the ui_chart node\nreturn [msg, msg];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 360,
+        "wires": [
+            [
+                "c72d25d5ebeb4a6d",
+                "e41aa19539a5bf8e"
+            ]
+        ]
+    },
+    {
+        "id": "122967ef617e7ed5",
+        "type": "http request",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://maker.ifttt.com/trigger/warning/json/with/key/bEcjIdlhfq-VdZI_egeHPN",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1130,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e823a807df84d25c",
+        "type": "delay",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 890,
+        "y": 560,
+        "wires": [
+            [
+                "122967ef617e7ed5"
+            ]
+        ]
+    },
+    {
+        "id": "e41aa19539a5bf8e",
+        "type": "delay",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 930,
+        "y": 460,
+        "wires": [
+            [
+                "3740b1791cacfef0"
+            ]
+        ]
+    },
+    {
+        "id": "3740b1791cacfef0",
+        "type": "http request",
+        "z": "2632fbc39bf76dc1",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://maker.ifttt.com/trigger/notice/json/with/key/bEcjIdlhfq-VdZI_egeHPN",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1150,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e095c60f295257ad",
+        "type": "ui_spacer",
+        "z": "2632fbc39bf76dc1",
+        "name": "spacer",
+        "group": "6bf10a3df078c33b",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "6dcf16bd642768ba",
+        "type": "ui_spacer",
+        "z": "2632fbc39bf76dc1",
+        "name": "spacer",
+        "group": "22c3c897cb35bb15",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "22c3c897cb35bb15",
+        "type": "ui_group",
+        "name": "Air status",
+        "tab": "cc949b7a9d1fc349",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "6bf10a3df078c33b",
+        "type": "ui_group",
+        "name": "Pot status",
+        "tab": "cc949b7a9d1fc349",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "cc949b7a9d1fc349",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": true
+    }
+]
