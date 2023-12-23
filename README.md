@@ -1,4 +1,3 @@
-# Overview
 ## A project for Introduction to IoT course at HCMUS
 ### ESP32
 Control the water pump based on the soil moisture, schedule using the Node-red flows UI
