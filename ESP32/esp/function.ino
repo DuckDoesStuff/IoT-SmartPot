@@ -2,9 +2,9 @@ void sendRequest() {
   if(millis() - lastRequestTime > requestTime) {
     WiFiClient cloudClient;
 
-    String request = "/update?api_key=" + String(apiKey) + "&field1=" + String(waterLevel) + "&field2=" + String(soilMoist);
+    String request = "/update?api_key=" + String(apiKey) + "&field1=" + String(humi) + "&field2=" + String(waterLevel)+ "&field3=" + String(soilMoist)+ "&field4=" + String(temp);
     while(!cloudClient.connect(host, 80)) {
-      Serial.println("connection fail");
+      Serial.println("Thingspeak connection fail");
       delay(1000);
     }
     cloudClient.print(String("GET ") + request + " HTTP/1.1\r\n"
@@ -29,11 +29,8 @@ int readMoist() {
   return outputValue;
 }
 
-void notifyWaterLevel() {
-  // TODO: implement this
-}
-
 void pumpWater() {
+  if (soilMoistLimit == 0) return;
   if(soilMoist <= soilMoistLimit) {
     digitalWrite(pumpPin, HIGH);
   }else {

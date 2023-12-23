@@ -4,7 +4,11 @@
 #include <PubSubClient.h>
 #include <AsyncTCP.h>
 #include "SPIFFS.h"
-#include <ezButton.h>
+#include <DHT.h>
+
+
+// Smartpot info
+String potID = "smartpot/123";
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -17,7 +21,7 @@ PubSubClient client(espClient);
 
 // Setup cloud server
 const char* host = "api.thingspeak.com";
-const char* apiKey = "MFRV7MHPBS2220WN";
+const char* apiKey = "E8VKD7CQPJCKZI3I";
 
 // Search for parameter in HTTP POST request
 const char* PARAM_INPUT_1 = "ssid";
@@ -52,21 +56,24 @@ const int ledPin = 2;
 const int waterLevelPin = 34;
 const int soilMoistPin = 35;
 const int pumpPin = 13;
-const int switchPin = 12;
-ezButton toggleSwitch(switchPin);
-
+#define DHTPIN 4 
+#define DHTTYPE DHT11
+float humi = 0;
+float temp = 0;
 int waterLevel = 0;
 int soilMoist = 0;
 
 int waterLevelLimit = 2;
-int soilMoistLimit = 20;
+int soilMoistLimit = 0;
+
+DHT dht(DHTPIN, DHTTYPE);
 
 void setPin() {
   pinMode(ledPin, OUTPUT);
   pinMode(waterLevelPin, INPUT);
   pinMode(soilMoistPin, INPUT);
   pinMode(pumpPin, OUTPUT);
-  toggleSwitch.setDebounceTime(50);
+  dht.begin();
 }
 
 void setup() {
@@ -74,70 +81,23 @@ void setup() {
   Serial.begin(115200);
 
   initSPIFFS();
-
-  // Set GPIO 2 as an OUTPUT
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
-  
   // Load values saved in SPIFFS
   ssid = readFile(SPIFFS, ssidPath);
   pass = readFile(SPIFFS, passPath);
+
   Serial.println(ssid);
   Serial.println(pass);
 
 
-
+  client.setServer(mqttServer, 1883);
+  client.setCallback(callback);
+  client.setKeepAlive( 300 );
   if(initWiFi()) {
-    client.setServer(mqttServer, 1883);
-    client.setCallback(callback);
-    client.setKeepAlive( 90 );
+    Serial.println("Setting up pin");
   }
   else {
-    // Connect to Wi-Fi network with SSID and password
-    Serial.println("Setting AP (Access Point)");
-    // NULL sets an open Access Point
-    WiFi.softAP("ESP-WIFI-MANAGER", NULL);
-
-    IPAddress IP = WiFi.softAPIP();
-    Serial.print("AP IP address: ");
-    Serial.println(IP); 
-
-    // Web Server Root URL
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-      request->send(SPIFFS, "/wifimanager.html", "text/html");
-    });
-    
-    server.serveStatic("/", SPIFFS, "/");
-    
-    server.on("/", HTTP_POST, [](AsyncWebServerRequest *request) {
-      int params = request->params();
-      for(int i=0;i<params;i++){
-        AsyncWebParameter* p = request->getParam(i);
-        if(p->isPost()){
-          // HTTP POST ssid value
-          if (p->name() == PARAM_INPUT_1) {
-            ssid = p->value().c_str();
-            Serial.print("SSID set to: ");
-            Serial.println(ssid);
-            // Write file to save value
-            writeFile(SPIFFS, ssidPath, ssid.c_str());
-          }
-          // HTTP POST pass value
-          if (p->name() == PARAM_INPUT_2) {
-            pass = p->value().c_str();
-            Serial.print("Password set to: ");
-            Serial.println(pass);
-            // Write file to save value
-            writeFile(SPIFFS, passPath, pass.c_str());
-          }
-          //Serial.printf("POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
-        }
-      }
-      //request->send(200, "text/plain", "Done. ESP will restart, connect to your router and go to IP address: " + ip);
-      delay(3000);
-      ESP.restart();
-    });
-    server.begin();
+    noWifiMode();
+    Serial.println("Setting up pin");
   }
   setPin();
 }
@@ -147,20 +107,26 @@ void loop() {
     mqttConnect();
   }
   client.loop();
-  // sendRequest();
 
-  // waterLevel = readWater();
-  // soilMoist = readMoist();
+  waterLevel = readWater();
+  soilMoist = readMoist();
+
+  humi = dht.readHumidity();
+  temp = dht.readTemperature();
+
+  sendRequest();
   // Serial.println(waterLevel);
   // Serial.println(soilMoist);
 
-  //pumpWater();
-  // toggleSwitch.loop(); // MUST call the loop() function first
-  // if(digitalRead(switchPin) == LOW) {
-  //   Serial.println("Switch: OFF");
-  // }else {
-  //   Serial.println("Switch: ON");
-  // }
+  pumpWater();
 
-  delay(100);
+  // Only blinks when connected to Wifi
+  if(WiFi.status() == WL_CONNECTED) {
+    digitalWrite(ledPin, HIGH);
+    delay(1000);
+    digitalWrite(ledPin, LOW);
+    delay(1000);
+  }else {
+    delay(2000);
+  }
 }
